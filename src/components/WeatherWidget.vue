@@ -21,7 +21,12 @@
     </div>
     <div class="row text-center">
       <div class="col">
-        <h1 class="display-4">{{ weather.data[0].temp }}&deg; C</h1>
+        <h1 v-if="temperatureScale == false" class="display-4">
+          {{ weather.data[0].temp }}&deg; C
+        </h1>
+        <h1 v-else class="display-4">
+          {{ (weather.data[0].temp * 1.8 + 32).toFixed(1) }}&deg; F
+        </h1>
       </div>
     </div>
   </div>
@@ -29,8 +34,8 @@
 
 <script>
 export default {
-  name: 'WeatherWidget',
-  props: ['weather'],
+  name: "WeatherWidget",
+  props: ["weather", "temperatureScale"],
   data() {
     return {
       codesForThunder: [200, 201, 202, 230, 231, 232, 233],
@@ -42,35 +47,35 @@ export default {
       codesForMediumRainy: [301, 501, 521],
       codesForHeavyRainy: [302, 502, 522],
       codesForCloudy: [804, 803, 700, 711, 721, 731, 741, 751],
-      codesForCloudySunny: [801, 802]
-    }
+      codesForCloudySunny: [801, 802],
+    };
   },
   methods: {
-    weatherIconURL: function(code) {
+    weatherIconURL: function (code) {
       if (this.codesForThunder.includes(code)) {
-        return require('../assets/weather_icons/thunder.svg')
+        return require("../assets/weather_icons/thunder.svg");
       } else if (this.codesForSunny.includes(code)) {
-        return require('../assets/weather_icons/sunny.svg')
+        return require("../assets/weather_icons/sunny.svg");
       } else if (this.codesForLightSnowy.includes(code)) {
-        return require('../assets/weather_icons/snowy-light.svg')
+        return require("../assets/weather_icons/snowy-light.svg");
       } else if (this.codesForMediumSnowy.includes(code)) {
-        return require('../assets/weather_icons/snowy-medium.svg')
+        return require("../assets/weather_icons/snowy-medium.svg");
       } else if (this.codesForHeavySnowy.includes(code)) {
-        return require('../assets/weather_icons/snowy-heavy.svg')
+        return require("../assets/weather_icons/snowy-heavy.svg");
       } else if (this.codesForLightRainy.includes(code)) {
-        return require('../assets/weather_icons/rainy-light.svg')
+        return require("../assets/weather_icons/rainy-light.svg");
       } else if (this.codesForMediumRainy.includes(code)) {
-        return require('../assets/weather_icons/rainy-medium.svg')
+        return require("../assets/weather_icons/rainy-medium.svg");
       } else if (this.codesForHeavyRainy.includes(code)) {
-        return require('../assets/weather_icons/rainy-heavy.svg')
+        return require("../assets/weather_icons/rainy-heavy.svg");
       } else if (this.codesForCloudy.includes(code)) {
-        return require('../assets/weather_icons/cloudy.svg')
+        return require("../assets/weather_icons/cloudy.svg");
       } else {
-        return require('../assets/weather_icons/cloudy-sunny.svg')
+        return require("../assets/weather_icons/cloudy-sunny.svg");
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style scoped>
 #img1 {
