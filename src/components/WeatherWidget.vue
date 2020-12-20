@@ -1,14 +1,5 @@
 <template>
-  <div v-if="weather !== null" class="container">
-    <!-- Name of city -->
-    <div class="row text-center">
-      <div class="col">
-        <h1 class="display-3">
-          {{ weather.data[0].city_name }}
-        </h1>
-      </div>
-    </div>
-
+  <div v-if="weather !== null" class="container-fluid">
     <!-- Weather icon -->
     <div class="row text-center">
       <div class="col">
@@ -44,18 +35,18 @@
       <div class="col-4 p-0">
         <h5>
           Wind <br />
-          {{ weather.data[0].wind_spd.toFixed(2) }} m/s <br />
+          {{ weather.data[0].wind_spd.toFixed(1) }} m/s <br />
           {{ weather.data[0].wind_cdir_full }}
         </h5>
       </div>
       <div class="col-4 p-0">
         <h5 v-if="weather.data[0].snow == '0'">
           Rain <br />
-          {{ weather.data[0].precip }} mm/h
+          {{ weather.data[0].precip.toFixed(1) }} mm/h
         </h5>
         <h5 v-else>
           Snow <br />
-          {{ weather.data[0].snow }} mm/h
+          {{ weather.data[0].snow.toFixed(1) }} mm/h
         </h5>
       </div>
     </div>

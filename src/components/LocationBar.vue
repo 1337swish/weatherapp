@@ -1,7 +1,6 @@
 <template>
   <div class="locationBar">
     <v-select
-      id="mySelect"
       v-model="selected"
       label="name"
       :options="options"
@@ -27,6 +26,7 @@ export default {
       this.search = "";
       this.$emit("update", {
         city: this.selected.name,
+        country: this.selected.country,
       });
     },
   },
@@ -41,6 +41,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-</style>

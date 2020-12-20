@@ -1,13 +1,31 @@
 <template>
   <div class="home">
-    <div class="container">
+    <div class="container-fluid">
       <div class="row justify-content-center py-5">
         <div class="col-md-4 col-lg-3">
           <LocationBar class="locationbar" @update="fetchWeather" />
         </div>
       </div>
+
+      <!-- Name of city -->
+      <div v-if="weatherData" class="row text-center">
+        <div class="col">
+          <h1 class="display-3">
+            {{ weatherData.data[0].city_name }}
+          </h1>
+        </div>
+      </div>
+
+      <!-- Name of country -->
+      <div v-if="weatherData" class="row text-center">
+        <div class="col">
+          <h5>
+            {{ country }}
+          </h5>
+        </div>
+      </div>
       <div class="row justify-content-center py-1">
-        <div class="col-10 col-sm-8 col-md-6">
+        <div class="col-12 col-sm-8 col-md-6">
           <carousel :perPage="1" paginationActiveColor="#5bc0de">
             <slide id="VueCarousel-slide-0"
               ><WeatherWidget
@@ -73,6 +91,7 @@ export default {
     return {
       weatherData: null,
       temperatureScale: false,
+      country: null,
     };
   },
   methods: {
@@ -92,7 +111,7 @@ export default {
         }
       );
     },
-    fetchWeather: function (args) {
+    fetchWeather: async function (args) {
       let URL = "https://api.weatherbit.io/v2.0/current?";
       // eslint-disable-next-line no-prototype-builtins
       if (args.hasOwnProperty("latitude")) {
@@ -106,15 +125,14 @@ export default {
       if (args.hasOwnProperty("city")) {
         URL = URL + "&city=" + args.city;
       }
-      // eslint-disable-next-line no-prototype-builtins
-      if (args.hasOwnProperty("country")) {
-        URL = URL + "&country=" + args.country;
-      }
+      this.country = args.country;
       URL = URL + "&key=f35e9420a2f441d0ad9dbf081cc1bd11";
-      axios.get(URL).then((response) => (this.weatherData = response.data));
+      await axios
+        .get(URL)
+        .then((response) => (this.weatherData = response.data));
     },
     background: function () {
-      if (this.weatherData !== null) {
+      if (this.weatherData) {
         // Time between sunrise to dawn in minutes
         let sunriseMins =
           parseInt(this.weatherData.data[0].sunrise.substring(0, 2)) * 60 +
@@ -126,7 +144,6 @@ export default {
           sunriseMins < sunsetMins
             ? sunsetMins - sunriseMins
             : 24 * 60 - (sunriseMins - sunsetMins);
-        console.log(minutesDiff);
 
         // Minutes after sunrise
         let time = new Date();
@@ -134,7 +151,6 @@ export default {
           parseInt(time.getUTCHours()) * 60 + parseInt(time.getUTCMinutes());
         let minutesAfterSunrise = minutesNow - sunriseMins;
 
-        console.log(minutesAfterSunrise);
         let node1 = document.querySelector(".v-select");
         let node2 = document.querySelector(".v-select .vs__selected");
         let node3 = document.querySelector(".v-select .vs__dropdown-menu");
@@ -144,6 +160,8 @@ export default {
         if (node2) nodeList.push(node2);
         if (node3) nodeList.push(node3);
         if (node4) nodeList.push(node4);
+
+        // Set background and text color depending on time
         if (minutesAfterSunrise > 0 && minutesAfterSunrise < 60) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
           document.body.style.color = "white";
