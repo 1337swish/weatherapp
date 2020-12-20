@@ -8,10 +8,43 @@
       </div>
       <div class="row justify-content-center py-1">
         <div class="col-10 col-sm-8 col-md-6">
-          <WeatherWidget
-            :weather="weatherData"
-            :temperatureScale="temperatureScale"
-          />
+          <carousel :perPage="1" paginationActiveColor="#5bc0de">
+            <slide id="VueCarousel-slide-0"
+              ><WeatherWidget
+                :weather="weatherData"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weather="weatherData"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weather="weatherData"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weather="weatherData"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weather="weatherData"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weather="weatherData"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weather="weatherData"
+                :temperatureScale="temperatureScale"
+            /></slide>
+          </carousel>
         </div>
       </div>
       <v-switch
@@ -143,15 +176,28 @@ export default {
   updated() {
     this.background();
   },
+  mounted: function () {
+    document
+      .getElementById("VueCarousel-slide-0")
+      .classList.add("VueCarousel-slide-active");
+  },
 };
 </script>
 
-<style scoped>
+<style>
 #tempSwitch {
   position: absolute;
   bottom: 10vh;
-  text-align: center;
   margin-left: -18px;
   left: 50%;
+}
+
+.VueCarousel-slide {
+  transition: all 1s;
+  opacity: 0 !important;
+}
+
+.VueCarousel-slide-active {
+  opacity: 1 !important;
 }
 </style>
