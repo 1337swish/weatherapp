@@ -1,5 +1,5 @@
 # weatherapp
-Version 1.0
+Version 1.0  
 Live demo can be found here: https://suspicious-minsky-8cb0c5.netlify.app/
 ## Project setup
 ```
