@@ -2,7 +2,7 @@
   <div class="home">
     <div class="container">
       <div class="row justify-content-center py-5">
-        <div class="col-sm-8 col-md-4">
+        <div class="col-md-4 col-lg-3">
           <LocationBar class="locationbar" @update="fetchWeather" />
         </div>
       </div>
@@ -39,7 +39,6 @@ export default {
   data: function () {
     return {
       weatherData: null,
-      timeOut: null,
       temperatureScale: false,
     };
   },
@@ -81,47 +80,64 @@ export default {
     background: function () {
       if (this.weatherData !== null) {
         // Time between sunrise to dawn in minutes
-        let minutesDiff =
+        let sunriseMins =
+          parseInt(this.weatherData.data[0].sunrise.substring(0, 2)) * 60 +
+          parseInt(this.weatherData.data[0].sunrise.substring(3));
+        let sunsetMins =
           parseInt(this.weatherData.data[0].sunset.substring(0, 2)) * 60 +
-          parseInt(this.weatherData.data[0].sunset.substring(3)) -
-          (parseInt(this.weatherData.data[0].sunrise.substring(0, 2)) * 60 +
-            parseInt(this.weatherData.data[0].sunrise.substring(3)));
-
+          parseInt(this.weatherData.data[0].sunset.substring(3));
+        let minutesDiff =
+          sunriseMins < sunsetMins
+            ? sunsetMins - sunriseMins
+            : 24 * 60 - (sunriseMins - sunsetMins);
         console.log(minutesDiff);
-        let time = new Date();
+
         // Minutes after sunrise
-        let minutesAfterSunrise =
-          parseInt(time.getHours()) * 60 +
-          parseInt(time.getMinutes()) -
-          (parseInt(this.weatherData.data[0].sunrise.substring(0, 2)) * 60 +
-            parseInt(this.weatherData.data[0].sunrise.substring(3)));
+        let time = new Date();
+        let minutesNow =
+          parseInt(time.getUTCHours()) * 60 + parseInt(time.getUTCMinutes());
+        let minutesAfterSunrise = minutesNow - sunriseMins;
+
         console.log(minutesAfterSunrise);
-        if (minutesAfterSunrise > -45 && minutesAfterSunrise < 45) {
+        let node1 = document.querySelector(".v-select");
+        let node2 = document.querySelector(".v-select .vs__selected");
+        let node3 = document.querySelector(".v-select .vs__dropdown-menu");
+        let node4 = document.querySelector(".v-select .vs__spinner");
+        let nodeList = [];
+        if (node1) nodeList.push(node1);
+        if (node2) nodeList.push(node2);
+        if (node3) nodeList.push(node3);
+        if (node4) nodeList.push(node4);
+        if (minutesAfterSunrise > 0 && minutesAfterSunrise < 60) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
           document.body.style.color = "white";
-        } else if (minutesAfterSunrise < minutesDiff - 45) {
+          nodeList.forEach((node) => (node.style.color = "white"));
+        } else if (
+          minutesAfterSunrise > 59 &&
+          minutesAfterSunrise < minutesDiff
+        ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/day.jpg")})`;
           document.body.style.color = "black";
+          nodeList.forEach((node) => (node.style.color = "black"));
         } else if (
-          minutesAfterSunrise > minutesDiff - 45 &&
-          minutesAfterSunrise < minutesDiff + 45
+          minutesAfterSunrise > minutesDiff - 1 &&
+          minutesAfterSunrise < minutesDiff + 60
         ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
           document.body.style.color = "white";
+          nodeList.forEach((node) => (node.style.color = "white"));
         } else {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/night.jpg")})`;
           document.body.style.color = "white";
+          nodeList.forEach((node) => (node.style.color = "white"));
         }
       }
-      this.timeOut = setTimeout(this.background, 60000 * 5);
-      console.log("updated");
     },
   },
   created() {
     this.getLocation();
   },
   updated() {
-    clearTimeout(this.timeOut);
     this.background();
   },
 };

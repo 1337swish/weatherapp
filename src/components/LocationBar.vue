@@ -1,6 +1,7 @@
 <template>
   <div class="locationBar">
     <v-select
+      id="mySelect"
       v-model="selected"
       label="name"
       :options="options"
@@ -41,5 +42,5 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss">
 </style>
