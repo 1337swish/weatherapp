@@ -1,5 +1,11 @@
 <template>
   <div class="container-fluid">
+    <!-- Day of the week -->
+    <div class="row text-center">
+      <div v-if="weatherNow || weatherForecast" class="col-12">
+        <p>{{ day }}</p>
+      </div>
+    </div>
     <!-- Current weather part -->
     <div>
       <!-- Weather icon -->
@@ -126,13 +132,13 @@
       <div v-if="weatherForecast" class="row text-center">
         <div v-if="weatherForecast.snow == '0'" class="col-6">
           <p class="text-responsive">
-            Precipitation <br />
+            Rain <br />
             {{ weatherForecast.precip.toFixed(1) }} mm
           </p>
         </div>
         <div v-else class="col-6">
           <p class="text-responsive">
-            Precipitation <br />
+            Snow <br />
             {{ weatherForecast.snow.toFixed(1) }} mm
           </p>
         </div>
@@ -178,8 +184,8 @@ export default {
       codesForLightRainy: [300, 500, 511, 520],
       codesForMediumRainy: [301, 501, 521],
       codesForHeavyRainy: [302, 502, 522],
-      codesForCloudy: [804, 803, 700, 711, 721, 731, 741, 751],
-      codesForCloudySunny: [801, 802],
+      codesForCloudy: [804, 803, 700, 711, 721, 731, 741, 751, 802],
+      codesForCloudySunny: [801],
     };
   },
   computed: {
@@ -204,6 +210,24 @@ export default {
     sunset() {
       let date = new Date(this.weatherForecast.sunset_ts * 1000);
       return "" + date.getHours() + ":" + date.getMinutes();
+    },
+    day() {
+      let days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      let date;
+      if (this.weatherNow) {
+        return "Right Now";
+      } else {
+        date = new Date(this.weatherForecast.datetime);
+      }
+      return days[date.getDay()];
     },
   },
   methods: {

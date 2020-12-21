@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <!-- Location search bar -->
     <div v-if="loaded" class="container-fluid">
       <div id="location" class="row justify-content-center">
         <div class="col-md-4 col-lg-3">
@@ -24,6 +25,8 @@
           </h5>
         </div>
       </div>
+
+      <!-- Carousel -->
       <div class="row justify-content-center py-1">
         <div class="col-12 col-sm-8 col-md-6">
           <carousel :perPage="1" paginationActiveColor="#5bc0de">
@@ -65,6 +68,8 @@
           </carousel>
         </div>
       </div>
+
+      <!-- Temperature scale switch -->
       <v-switch
         id="tempSwitch"
         v-model="temperatureScale"
@@ -141,7 +146,6 @@ export default {
         .get(URL2)
         .then((response) => (this.weatherForecast = response.data));
       this.loaded = true;
-      console.log(this.weatherForecast.data[6]);
     },
     background: function () {
       if (this.weatherNow) {
