@@ -1,23 +1,23 @@
 <template>
   <div class="home">
-    <div class="container-fluid">
-      <div class="row justify-content-center py-5">
+    <div v-if="loaded" class="container-fluid">
+      <div id="location" class="row justify-content-center">
         <div class="col-md-4 col-lg-3">
           <LocationBar class="locationbar" @update="fetchWeather" />
         </div>
       </div>
 
       <!-- Name of city -->
-      <div v-if="weatherData" class="row text-center">
+      <div class="row text-center">
         <div class="col">
           <h1 class="display-3">
-            {{ weatherData.data[0].city_name }}
+            {{ weatherNow.data[0].city_name }}
           </h1>
         </div>
       </div>
 
       <!-- Name of country -->
-      <div v-if="weatherData" class="row text-center">
+      <div class="row text-center">
         <div class="col">
           <h5>
             {{ country }}
@@ -29,37 +29,37 @@
           <carousel :perPage="1" paginationActiveColor="#5bc0de">
             <slide id="VueCarousel-slide-0"
               ><WeatherWidget
-                :weather="weatherData"
+                :weatherNow="weatherNow"
                 :temperatureScale="temperatureScale"
             /></slide>
             <slide
               ><WeatherWidget
-                :weather="weatherData"
+                :weatherForecast="weatherForecast.data[1]"
                 :temperatureScale="temperatureScale"
             /></slide>
             <slide
               ><WeatherWidget
-                :weather="weatherData"
+                :weatherForecast="weatherForecast.data[2]"
                 :temperatureScale="temperatureScale"
             /></slide>
             <slide
               ><WeatherWidget
-                :weather="weatherData"
+                :weatherForecast="weatherForecast.data[3]"
                 :temperatureScale="temperatureScale"
             /></slide>
             <slide
               ><WeatherWidget
-                :weather="weatherData"
+                :weatherForecast="weatherForecast.data[4]"
                 :temperatureScale="temperatureScale"
             /></slide>
             <slide
               ><WeatherWidget
-                :weather="weatherData"
+                :weatherForecast="weatherForecast.data[5]"
                 :temperatureScale="temperatureScale"
             /></slide>
             <slide
               ><WeatherWidget
-                :weather="weatherData"
+                :weatherForecast="weatherForecast.data[6]"
                 :temperatureScale="temperatureScale"
             /></slide>
           </carousel>
@@ -89,9 +89,11 @@ export default {
   },
   data: function () {
     return {
-      weatherData: null,
+      weatherNow: null,
+      weatherForecast: null,
       temperatureScale: false,
       country: null,
+      loaded: false,
     };
   },
   methods: {
@@ -113,33 +115,43 @@ export default {
     },
     fetchWeather: async function (args) {
       let URL = "https://api.weatherbit.io/v2.0/current?";
+      let URL2 = "https://api.weatherbit.io/v2.0/forecast/daily?";
       // eslint-disable-next-line no-prototype-builtins
       if (args.hasOwnProperty("latitude")) {
         URL = URL + "&lat=" + args.latitude;
+        URL2 = URL2 + "&lat=" + args.latitude;
       }
       // eslint-disable-next-line no-prototype-builtins
       if (args.hasOwnProperty("longitude")) {
         URL = URL + "&lon=" + args.longitude;
+        URL2 = URL2 + "&lon=" + args.longitude;
       }
       // eslint-disable-next-line no-prototype-builtins
       if (args.hasOwnProperty("city")) {
         URL = URL + "&city=" + args.city;
+        URL2 = URL2 + "&city=" + args.city;
       }
       this.country = args.country;
       URL = URL + "&key=f35e9420a2f441d0ad9dbf081cc1bd11";
+      URL2 = URL2 + "&key=f35e9420a2f441d0ad9dbf081cc1bd11";
       await axios
         .get(URL)
-        .then((response) => (this.weatherData = response.data));
+        .then((response) => (this.weatherNow = response.data));
+      await axios
+        .get(URL2)
+        .then((response) => (this.weatherForecast = response.data));
+      this.loaded = true;
+      console.log(this.weatherForecast.data[6]);
     },
     background: function () {
-      if (this.weatherData) {
+      if (this.weatherNow) {
         // Time between sunrise to dawn in minutes
         let sunriseMins =
-          parseInt(this.weatherData.data[0].sunrise.substring(0, 2)) * 60 +
-          parseInt(this.weatherData.data[0].sunrise.substring(3));
+          parseInt(this.weatherNow.data[0].sunrise.substring(0, 2)) * 60 +
+          parseInt(this.weatherNow.data[0].sunrise.substring(3));
         let sunsetMins =
-          parseInt(this.weatherData.data[0].sunset.substring(0, 2)) * 60 +
-          parseInt(this.weatherData.data[0].sunset.substring(3));
+          parseInt(this.weatherNow.data[0].sunset.substring(0, 2)) * 60 +
+          parseInt(this.weatherNow.data[0].sunset.substring(3));
         let minutesDiff =
           sunriseMins < sunsetMins
             ? sunsetMins - sunriseMins
@@ -175,7 +187,7 @@ export default {
           nodeList.forEach((node) => (node.style.color = "black"));
         } else if (
           minutesAfterSunrise > minutesDiff - 1 &&
-          minutesAfterSunrise < minutesDiff + 60
+          minutesAfterSunrise < minutesDiff + 45
         ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
           document.body.style.color = "white";
@@ -193,8 +205,6 @@ export default {
   },
   updated() {
     this.background();
-  },
-  mounted: function () {
     document
       .getElementById("VueCarousel-slide-0")
       .classList.add("VueCarousel-slide-active");
@@ -204,8 +214,7 @@ export default {
 
 <style>
 #tempSwitch {
-  position: absolute;
-  bottom: 10vh;
+  position: relative;
   margin-left: -18px;
   left: 50%;
 }
@@ -217,5 +226,19 @@ export default {
 
 .VueCarousel-slide-active {
   opacity: 1 !important;
+}
+
+@media (max-width: 767px) {
+  #location {
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+}
+
+@media (min-width: 768px) {
+  #location {
+    padding-top: 3em;
+    padding-bottom: 2em;
+  }
 }
 </style>
