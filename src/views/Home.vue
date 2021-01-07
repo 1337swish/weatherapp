@@ -197,7 +197,7 @@ export default {
           document.body.style.color = "white";
           nodeList.forEach((node) => (node.style.color = "white"));
         } else {
-          document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/night.jpg")})`;
+          document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/night.png")})`;
           document.body.style.color = "white";
           nodeList.forEach((node) => (node.style.color = "white"));
         }
