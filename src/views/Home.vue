@@ -1,19 +1,76 @@
 <template>
   <div class="home">
-    <div class="container">
-      <div class="row justify-content-center py-5">
+    <div id="widgetSpot"></div>
+    <!-- Location search bar -->
+    <div v-if="loaded" class="container-fluid">
+      <div id="location" class="row justify-content-center">
         <div class="col-md-4 col-lg-3">
           <LocationBar class="locationbar" @update="fetchWeather" />
         </div>
       </div>
-      <div class="row justify-content-center py-1">
-        <div class="col-10 col-sm-8 col-md-6">
-          <WeatherWidget
-            :weather="weatherData"
-            :temperatureScale="temperatureScale"
-          />
+
+      <!-- Name of city -->
+      <div class="row text-center">
+        <div class="col">
+          <h1 class="display-3 coloredText">
+            {{ weatherNow.data[0].city_name }}
+          </h1>
         </div>
       </div>
+
+      <!-- Name of country -->
+      <div class="row text-center">
+        <div class="col">
+          <h5 class="coloredText">
+            {{ country }}
+          </h5>
+        </div>
+      </div>
+
+      <!-- Carousel -->
+      <div class="row justify-content-center py-1">
+        <div class="col-12 col-sm-8 col-md-6">
+          <carousel :perPage="1" paginationActiveColor="#5bc0de">
+            <slide id="VueCarousel-slide-0"
+              ><WeatherWidget
+                :weatherNow="weatherNow"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weatherForecast="weatherForecast.data[1]"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weatherForecast="weatherForecast.data[2]"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weatherForecast="weatherForecast.data[3]"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weatherForecast="weatherForecast.data[4]"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weatherForecast="weatherForecast.data[5]"
+                :temperatureScale="temperatureScale"
+            /></slide>
+            <slide
+              ><WeatherWidget
+                :weatherForecast="weatherForecast.data[6]"
+                :temperatureScale="temperatureScale"
+            /></slide>
+          </carousel>
+        </div>
+      </div>
+
+      <!-- Temperature scale switch -->
       <v-switch
         id="tempSwitch"
         v-model="temperatureScale"
@@ -38,8 +95,11 @@ export default {
   },
   data: function () {
     return {
-      weatherData: null,
+      weatherNow: null,
+      weatherForecast: null,
       temperatureScale: false,
+      country: null,
+      loaded: false,
     };
   },
   methods: {
@@ -53,44 +113,54 @@ export default {
         },
         (error) => {
           console.log(error);
+          this.fetchWeather({
+            city: "Stockholm",
+          });
         }
       );
     },
-    fetchWeather: function (args) {
+    fetchWeather: async function (args) {
       let URL = "https://api.weatherbit.io/v2.0/current?";
+      let URL2 = "https://api.weatherbit.io/v2.0/forecast/daily?";
       // eslint-disable-next-line no-prototype-builtins
       if (args.hasOwnProperty("latitude")) {
         URL = URL + "&lat=" + args.latitude;
+        URL2 = URL2 + "&lat=" + args.latitude;
       }
       // eslint-disable-next-line no-prototype-builtins
       if (args.hasOwnProperty("longitude")) {
         URL = URL + "&lon=" + args.longitude;
+        URL2 = URL2 + "&lon=" + args.longitude;
       }
       // eslint-disable-next-line no-prototype-builtins
       if (args.hasOwnProperty("city")) {
         URL = URL + "&city=" + args.city;
+        URL2 = URL2 + "&city=" + args.city;
       }
-      // eslint-disable-next-line no-prototype-builtins
-      if (args.hasOwnProperty("country")) {
-        URL = URL + "&country=" + args.country;
-      }
+      this.country = args.country;
       URL = URL + "&key=f35e9420a2f441d0ad9dbf081cc1bd11";
-      axios.get(URL).then((response) => (this.weatherData = response.data));
+      URL2 = URL2 + "&key=f35e9420a2f441d0ad9dbf081cc1bd11";
+      await axios
+        .get(URL)
+        .then((response) => (this.weatherNow = response.data));
+      await axios
+        .get(URL2)
+        .then((response) => (this.weatherForecast = response.data));
+      this.loaded = true;
     },
     background: function () {
-      if (this.weatherData !== null) {
+      if (this.weatherNow) {
         // Time between sunrise to dawn in minutes
         let sunriseMins =
-          parseInt(this.weatherData.data[0].sunrise.substring(0, 2)) * 60 +
-          parseInt(this.weatherData.data[0].sunrise.substring(3));
+          parseInt(this.weatherNow.data[0].sunrise.substring(0, 2)) * 60 +
+          parseInt(this.weatherNow.data[0].sunrise.substring(3));
         let sunsetMins =
-          parseInt(this.weatherData.data[0].sunset.substring(0, 2)) * 60 +
-          parseInt(this.weatherData.data[0].sunset.substring(3));
+          parseInt(this.weatherNow.data[0].sunset.substring(0, 2)) * 60 +
+          parseInt(this.weatherNow.data[0].sunset.substring(3));
         let minutesDiff =
           sunriseMins < sunsetMins
             ? sunsetMins - sunriseMins
             : 24 * 60 - (sunriseMins - sunsetMins);
-        console.log(minutesDiff);
 
         // Minutes after sunrise
         let time = new Date();
@@ -98,38 +168,43 @@ export default {
           parseInt(time.getUTCHours()) * 60 + parseInt(time.getUTCMinutes());
         let minutesAfterSunrise = minutesNow - sunriseMins;
 
-        console.log(minutesAfterSunrise);
-        let node1 = document.querySelector(".v-select");
-        let node2 = document.querySelector(".v-select .vs__selected");
-        let node3 = document.querySelector(".v-select .vs__dropdown-menu");
-        let node4 = document.querySelector(".v-select .vs__spinner");
-        let nodeList = [];
-        if (node1) nodeList.push(node1);
-        if (node2) nodeList.push(node2);
-        if (node3) nodeList.push(node3);
-        if (node4) nodeList.push(node4);
+        let elements = document.getElementsByClassName("coloredText");
+        let tempText = document.getElementsByClassName("vue-switcher__label");
+        // Set background and text color depending on time
         if (minutesAfterSunrise > 0 && minutesAfterSunrise < 60) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
-          document.body.style.color = "white";
-          nodeList.forEach((node) => (node.style.color = "white"));
+          tempText[0].style.color = "white";
+          elements.forEach((e) => {
+            e.style.textShadow = "black 1px 1px 4px";
+            e.style.color = "white";
+          });
         } else if (
           minutesAfterSunrise > 59 &&
           minutesAfterSunrise < minutesDiff
         ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/day.jpg")})`;
-          document.body.style.color = "black";
-          nodeList.forEach((node) => (node.style.color = "black"));
+          tempText[0].style.color = "black";
+          elements.forEach((e) => {
+            e.style.textShadow = "white 1px 1px 4px";
+            e.style.color = "black";
+          });
         } else if (
           minutesAfterSunrise > minutesDiff - 1 &&
-          minutesAfterSunrise < minutesDiff + 60
+          minutesAfterSunrise < minutesDiff + 45
         ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
-          document.body.style.color = "white";
-          nodeList.forEach((node) => (node.style.color = "white"));
+          tempText[0].style.color = "white";
+          elements.forEach((e) => {
+            e.style.textShadow = "black 1px 1px 4px";
+            e.style.color = "white";
+          });
         } else {
-          document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/night.jpg")})`;
-          document.body.style.color = "white";
-          nodeList.forEach((node) => (node.style.color = "white"));
+          document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/night.png")})`;
+          tempText[0].style.color = "white";
+          elements.forEach((e) => {
+            e.style.textShadow = "black 1px 1px 4px";
+            e.style.color = "white";
+          });
         }
       }
     },
@@ -139,16 +214,45 @@ export default {
   },
   updated() {
     this.background();
+    document
+      .getElementById("VueCarousel-slide-0")
+      .classList.add("VueCarousel-slide-active");
   },
 };
 </script>
 
-<style scoped>
+<style>
+.v-select {
+  background: white !important;
+  border-radius: 5px;
+}
+
 #tempSwitch {
-  position: absolute;
-  bottom: 10vh;
-  text-align: center;
+  position: relative;
   margin-left: -18px;
   left: 50%;
+}
+
+.VueCarousel-slide {
+  transition: all 1s;
+  opacity: 0 !important;
+}
+
+.VueCarousel-slide-active {
+  opacity: 1 !important;
+}
+
+@media (max-width: 767px) {
+  #location {
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+}
+
+@media (min-width: 768px) {
+  #location {
+    padding-top: 3em;
+    padding-bottom: 2em;
+  }
 }
 </style>

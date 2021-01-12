@@ -1,76 +1,179 @@
 <template>
-  <div v-if="weather !== null" class="container">
-    <!-- Name of city -->
+  <div class="container-fluid">
+    <!-- Day of the week -->
     <div class="row text-center">
-      <div class="col">
-        <h1 class="display-3">
-          {{ weather.data[0].city_name }}
-        </h1>
+      <div v-if="weatherNow || weatherForecast" class="col-12">
+        <p class="coloredText">{{ day }}</p>
+      </div>
+    </div>
+    <!-- Current weather part -->
+    <div>
+      <!-- Weather icon -->
+      <div v-if="weatherNow" class="row text-center">
+        <div class="col">
+          <img
+            :src="weatherIconURL(this.weatherNow.data[0].weather.code)"
+            class="img w-25"
+            alt="Responsive image"
+            id="img1"
+          />
+        </div>
+      </div>
+
+      <!-- Temperature outside -->
+      <div v-if="weatherNow" class="row text-center">
+        <div class="col">
+          <h1 v-if="temperatureScale == false" class="display-1 coloredText">
+            {{ weatherNow.data[0].temp }}&deg; C
+          </h1>
+          <h1 v-else class="display-1 coloredText">
+            {{ (weatherNow.data[0].temp * 1.8 + 32).toFixed(1) }}&deg; F
+          </h1>
+        </div>
+      </div>
+
+      <!-- Other weather information -->
+      <div v-if="weatherNow" class="row text-center pt-3">
+        <div class="col-4">
+          <p class="text-responsive coloredText">
+            Clouds <br />
+            {{ weatherNow.data[0].clouds }} %
+          </p>
+        </div>
+        <div class="col-4">
+          <p class="text-responsive coloredText">
+            Wind <br />
+            {{ weatherNow.data[0].wind_spd.toFixed(1) }} m/s <br />
+            {{ weatherNow.data[0].wind_cdir }}
+          </p>
+        </div>
+        <div class="col-4">
+          <p
+            v-if="weatherNow.data[0].snow == '0'"
+            class="text-responsive coloredText"
+          >
+            Rain <br />
+            {{ weatherNow.data[0].precip.toFixed(1) }} mm/h
+          </p>
+          <p v-else class="text-responsive coloredText">
+            Snow <br />
+            {{ weatherNow.data[0].snow.toFixed(1) }} mm/h
+          </p>
+        </div>
+      </div>
+
+      <!-- Sunrise/sunset -->
+      <div v-if="weatherNow" class="row text-center pt-4">
+        <div class="col-6">
+          <p class="text-responsive coloredText">
+            Sunrise <br />
+            {{ sunriseToday }}
+          </p>
+        </div>
+        <div class="col-6">
+          <p class="text-responsive coloredText">
+            Sunset <br />
+            {{ sunsetToday }}
+          </p>
+        </div>
       </div>
     </div>
 
-    <!-- Weather icon -->
-    <div class="row text-center">
-      <div class="col">
-        <img
-          :src="weatherIconURL(this.weather.data[0].weather.code)"
-          class="img w-25"
-          alt="Responsive image"
-          id="img1"
-        />
+    <!-- Forecast weather part -->
+    <div>
+      <!-- Weather icon -->
+      <div v-if="weatherForecast" class="row text-center">
+        <div class="col">
+          <img
+            :src="weatherIconURL(this.weatherForecast.weather.code)"
+            class="img w-25"
+            alt="Responsive image"
+            id="img1"
+          />
+        </div>
       </div>
-    </div>
 
-    <!-- Temperature outside -->
-    <div class="row text-center">
-      <div class="col">
-        <h1 v-if="temperatureScale == false" class="display-1">
-          {{ weather.data[0].temp }}&deg; C
-        </h1>
-        <h1 v-else class="display-1">
-          {{ (weather.data[0].temp * 1.8 + 32).toFixed(1) }}&deg; F
-        </h1>
+      <!-- Temperature high and low -->
+      <div v-if="weatherForecast" class="row text-center">
+        <div class="col-6">
+          <p
+            v-if="temperatureScale == false"
+            class="text-responsive coloredText"
+          >
+            High <br />
+            {{ weatherForecast.max_temp }}&deg; C
+          </p>
+          <p v-else class="text-responsive coloredText">
+            High <br />
+            {{ (weatherForecast.max_temp * 1.8 + 32).toFixed(1) }}&deg; F
+          </p>
+        </div>
+        <div class="col-6">
+          <p
+            v-if="temperatureScale == false"
+            class="text-responsive coloredText"
+          >
+            Low <br />
+            {{ weatherForecast.min_temp }}&deg; C
+          </p>
+          <p v-else class="text-responsive coloredText">
+            Low <br />
+            {{ (weatherForecast.min_temp * 1.8 + 32).toFixed(1) }}&deg; F
+          </p>
+        </div>
       </div>
-    </div>
 
-    <!-- Other weather information -->
-    <div class="row text-center pt-3">
-      <div class="col-4 p-0">
-        <h5>
-          Clouds <br />
-          {{ weather.data[0].clouds }} %
-        </h5>
+      <!-- Probability of Precipitation & winds -->
+      <div v-if="weatherForecast" class="row text-center py-3">
+        <div class="col-6">
+          <p class="text-responsive coloredText">
+            Precipitation <br />
+            {{ weatherForecast.pop }}%
+          </p>
+        </div>
+        <div class="col-6">
+          <p class="text-responsive coloredText">
+            Cloud coverage <br />
+            {{ weatherForecast.clouds }}%
+          </p>
+        </div>
       </div>
-      <div class="col-4 p-0">
-        <h5>
-          Wind <br />
-          {{ weather.data[0].wind_spd.toFixed(2) }} m/s <br />
-          {{ weather.data[0].wind_cdir_full }}
-        </h5>
+      <div v-if="weatherForecast" class="row text-center">
+        <div v-if="weatherForecast.snow == '0'" class="col-6">
+          <p class="text-responsive coloredText">
+            Rain <br />
+            {{ weatherForecast.precip.toFixed(1) }} mm
+          </p>
+        </div>
+        <div v-else class="col-6">
+          <p class="text-responsive coloredText">
+            Snow <br />
+            {{ weatherForecast.snow.toFixed(1) }} mm
+          </p>
+        </div>
+        <div class="col-6">
+          <p class="text-responsive coloredText">
+            Winds <br />
+            {{ weatherForecast.wind_spd.toFixed(1) }} m/s
+            {{ weatherForecast.wind_cdir }}
+          </p>
+        </div>
       </div>
-      <div class="col-4 p-0">
-        <h5 v-if="weather.data[0].snow == '0'">
-          Rain <br />
-          {{ weather.data[0].precip }} mm/h
-        </h5>
-        <h5 v-else>
-          Snow <br />
-          {{ weather.data[0].snow }} mm/h
-        </h5>
-      </div>
-    </div>
-    <div v-if="weather" class="row text-center pt-5">
-      <div class="col-6 p-0">
-        <h5>
-          Sunrise <br />
-          {{ sunrise }}
-        </h5>
-      </div>
-      <div class="col-6 p-0">
-        <h5>
-          Sunset <br />
-          {{ sunset }}
-        </h5>
+
+      <!-- Sunrise/sunset -->
+      <div v-if="weatherForecast" class="row text-center pt-4">
+        <div class="col-6 p-0">
+          <p class="text-responsive coloredText">
+            Sunrise <br />
+            {{ sunrise }}
+          </p>
+        </div>
+        <div class="col-6 p-0">
+          <p class="text-responsive coloredText">
+            Sunset <br />
+            {{ sunset }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -79,7 +182,7 @@
 <script>
 export default {
   name: "WeatherWidget",
-  props: ["weather", "temperatureScale"],
+  props: ["weatherNow", "weatherForecast", "temperatureScale"],
   data() {
     return {
       codesForThunder: [200, 201, 202, 230, 231, 232, 233],
@@ -90,22 +193,50 @@ export default {
       codesForLightRainy: [300, 500, 511, 520],
       codesForMediumRainy: [301, 501, 521],
       codesForHeavyRainy: [302, 502, 522],
-      codesForCloudy: [804, 803, 700, 711, 721, 731, 741, 751],
-      codesForCloudySunny: [801, 802],
+      codesForCloudy: [804, 803, 700, 711, 721, 731, 741, 751, 802],
+      codesForCloudySunny: [801],
     };
   },
   computed: {
-    sunrise() {
-      let sunriseHour = parseInt(this.weather.data[0].sunrise.substring(0, 2));
-      let sunriseRest = this.weather.data[0].sunrise.substring(2);
+    sunriseToday() {
+      let sunriseHour = parseInt(
+        this.weatherNow.data[0].sunrise.substring(0, 2)
+      );
+      let sunriseRest = this.weatherNow.data[0].sunrise.substring(2);
       return sunriseHour < 23
         ? sunriseHour + 1 + sunriseRest
         : "00" + sunriseRest;
     },
-    sunset() {
-      let sunsetHour = parseInt(this.weather.data[0].sunset.substring(0, 2));
-      let sunsetRest = this.weather.data[0].sunset.substring(2);
+    sunsetToday() {
+      let sunsetHour = parseInt(this.weatherNow.data[0].sunset.substring(0, 2));
+      let sunsetRest = this.weatherNow.data[0].sunset.substring(2);
       return sunsetHour < 23 ? sunsetHour + 1 + sunsetRest : "00" + sunsetRest;
+    },
+    sunrise() {
+      let date = new Date(this.weatherForecast.sunrise_ts * 1000);
+      return "" + date.getHours() + ":" + date.getMinutes();
+    },
+    sunset() {
+      let date = new Date(this.weatherForecast.sunset_ts * 1000);
+      return "" + date.getHours() + ":" + date.getMinutes();
+    },
+    day() {
+      let days = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+      let date;
+      if (this.weatherNow) {
+        return "Right Now";
+      } else {
+        date = new Date(this.weatherForecast.datetime);
+      }
+      return days[date.getDay()];
     },
   },
   methods: {
