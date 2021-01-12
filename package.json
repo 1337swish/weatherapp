@@ -9,12 +9,12 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.5.4",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "bootstrap": "^5.0.0-beta1",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vue-select": "^3.10.8",
+    "vue-select": "^3.11.2",
     "vue-switches": "^2.0.1"
   },
   "devDependencies": {

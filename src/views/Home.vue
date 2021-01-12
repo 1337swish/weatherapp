@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <div id="widgetSpot"></div>
     <!-- Location search bar -->
     <div v-if="loaded" class="container-fluid">
       <div id="location" class="row justify-content-center">
@@ -11,7 +12,7 @@
       <!-- Name of city -->
       <div class="row text-center">
         <div class="col">
-          <h1 class="display-3">
+          <h1 class="display-3 coloredText">
             {{ weatherNow.data[0].city_name }}
           </h1>
         </div>
@@ -20,7 +21,7 @@
       <!-- Name of country -->
       <div class="row text-center">
         <div class="col">
-          <h5>
+          <h5 class="coloredText">
             {{ country }}
           </h5>
         </div>
@@ -167,39 +168,43 @@ export default {
           parseInt(time.getUTCHours()) * 60 + parseInt(time.getUTCMinutes());
         let minutesAfterSunrise = minutesNow - sunriseMins;
 
-        let node1 = document.querySelector(".v-select");
-        let node2 = document.querySelector(".v-select .vs__selected");
-        let node3 = document.querySelector(".v-select .vs__dropdown-menu");
-        let node4 = document.querySelector(".v-select .vs__spinner");
-        let nodeList = [];
-        if (node1) nodeList.push(node1);
-        if (node2) nodeList.push(node2);
-        if (node3) nodeList.push(node3);
-        if (node4) nodeList.push(node4);
-
+        let elements = document.getElementsByClassName("coloredText");
+        let tempText = document.getElementsByClassName("vue-switcher__label");
         // Set background and text color depending on time
         if (minutesAfterSunrise > 0 && minutesAfterSunrise < 60) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
-          document.body.style.color = "white";
-          nodeList.forEach((node) => (node.style.color = "white"));
+          tempText[0].style.color = "white";
+          elements.forEach((e) => {
+            e.style.textShadow = "black 1px 1px 4px";
+            e.style.color = "white";
+          });
         } else if (
           minutesAfterSunrise > 59 &&
           minutesAfterSunrise < minutesDiff
         ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/day.jpg")})`;
-          document.body.style.color = "black";
-          nodeList.forEach((node) => (node.style.color = "black"));
+          tempText[0].style.color = "black";
+          elements.forEach((e) => {
+            e.style.textShadow = "white 1px 1px 4px";
+            e.style.color = "black";
+          });
         } else if (
           minutesAfterSunrise > minutesDiff - 1 &&
           minutesAfterSunrise < minutesDiff + 45
         ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
-          document.body.style.color = "white";
-          nodeList.forEach((node) => (node.style.color = "white"));
+          tempText[0].style.color = "white";
+          elements.forEach((e) => {
+            e.style.textShadow = "black 1px 1px 4px";
+            e.style.color = "white";
+          });
         } else {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/night.png")})`;
-          document.body.style.color = "white";
-          nodeList.forEach((node) => (node.style.color = "white"));
+          tempText[0].style.color = "white";
+          elements.forEach((e) => {
+            e.style.textShadow = "black 1px 1px 4px";
+            e.style.color = "white";
+          });
         }
       }
     },
@@ -217,6 +222,11 @@ export default {
 </script>
 
 <style>
+.v-select {
+  background: white !important;
+  border-radius: 5px;
+}
+
 #tempSwitch {
   position: relative;
   margin-left: -18px;

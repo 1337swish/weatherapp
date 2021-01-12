@@ -3,7 +3,7 @@
     <!-- Day of the week -->
     <div class="row text-center">
       <div v-if="weatherNow || weatherForecast" class="col-12">
-        <p>{{ day }}</p>
+        <p class="coloredText">{{ day }}</p>
       </div>
     </div>
     <!-- Current weather part -->
@@ -23,10 +23,10 @@
       <!-- Temperature outside -->
       <div v-if="weatherNow" class="row text-center">
         <div class="col">
-          <h1 v-if="temperatureScale == false" class="display-1">
+          <h1 v-if="temperatureScale == false" class="display-1 coloredText">
             {{ weatherNow.data[0].temp }}&deg; C
           </h1>
-          <h1 v-else class="display-1">
+          <h1 v-else class="display-1 coloredText">
             {{ (weatherNow.data[0].temp * 1.8 + 32).toFixed(1) }}&deg; F
           </h1>
         </div>
@@ -35,24 +35,27 @@
       <!-- Other weather information -->
       <div v-if="weatherNow" class="row text-center pt-3">
         <div class="col-4">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Clouds <br />
             {{ weatherNow.data[0].clouds }} %
           </p>
         </div>
         <div class="col-4">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Wind <br />
             {{ weatherNow.data[0].wind_spd.toFixed(1) }} m/s <br />
             {{ weatherNow.data[0].wind_cdir }}
           </p>
         </div>
         <div class="col-4">
-          <p v-if="weatherNow.data[0].snow == '0'" class="text-responsive">
+          <p
+            v-if="weatherNow.data[0].snow == '0'"
+            class="text-responsive coloredText"
+          >
             Rain <br />
             {{ weatherNow.data[0].precip.toFixed(1) }} mm/h
           </p>
-          <p v-else class="text-responsive">
+          <p v-else class="text-responsive coloredText">
             Snow <br />
             {{ weatherNow.data[0].snow.toFixed(1) }} mm/h
           </p>
@@ -62,13 +65,13 @@
       <!-- Sunrise/sunset -->
       <div v-if="weatherNow" class="row text-center pt-4">
         <div class="col-6">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Sunrise <br />
             {{ sunriseToday }}
           </p>
         </div>
         <div class="col-6">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Sunset <br />
             {{ sunsetToday }}
           </p>
@@ -93,21 +96,27 @@
       <!-- Temperature high and low -->
       <div v-if="weatherForecast" class="row text-center">
         <div class="col-6">
-          <p v-if="temperatureScale == false" class="text-responsive">
+          <p
+            v-if="temperatureScale == false"
+            class="text-responsive coloredText"
+          >
             High <br />
             {{ weatherForecast.max_temp }}&deg; C
           </p>
-          <p v-else class="text-responsive">
+          <p v-else class="text-responsive coloredText">
             High <br />
             {{ (weatherForecast.max_temp * 1.8 + 32).toFixed(1) }}&deg; F
           </p>
         </div>
         <div class="col-6">
-          <p v-if="temperatureScale == false" class="text-responsive">
+          <p
+            v-if="temperatureScale == false"
+            class="text-responsive coloredText"
+          >
             Low <br />
             {{ weatherForecast.min_temp }}&deg; C
           </p>
-          <p v-else class="text-responsive">
+          <p v-else class="text-responsive coloredText">
             Low <br />
             {{ (weatherForecast.min_temp * 1.8 + 32).toFixed(1) }}&deg; F
           </p>
@@ -117,13 +126,13 @@
       <!-- Probability of Precipitation & winds -->
       <div v-if="weatherForecast" class="row text-center py-3">
         <div class="col-6">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Precipitation <br />
             {{ weatherForecast.pop }}%
           </p>
         </div>
         <div class="col-6">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Cloud coverage <br />
             {{ weatherForecast.clouds }}%
           </p>
@@ -131,19 +140,19 @@
       </div>
       <div v-if="weatherForecast" class="row text-center">
         <div v-if="weatherForecast.snow == '0'" class="col-6">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Rain <br />
             {{ weatherForecast.precip.toFixed(1) }} mm
           </p>
         </div>
         <div v-else class="col-6">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Snow <br />
             {{ weatherForecast.snow.toFixed(1) }} mm
           </p>
         </div>
         <div class="col-6">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Winds <br />
             {{ weatherForecast.wind_spd.toFixed(1) }} m/s
             {{ weatherForecast.wind_cdir }}
@@ -154,13 +163,13 @@
       <!-- Sunrise/sunset -->
       <div v-if="weatherForecast" class="row text-center pt-4">
         <div class="col-6 p-0">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Sunrise <br />
             {{ sunrise }}
           </p>
         </div>
         <div class="col-6 p-0">
-          <p class="text-responsive">
+          <p class="text-responsive coloredText">
             Sunset <br />
             {{ sunset }}
           </p>

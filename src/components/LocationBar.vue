@@ -7,8 +7,8 @@
       @search="(query) => (search = query)"
       @input="setCity"
       :clearable="false"
-      placeholder="Search for a place..."
-    ></v-select>
+      :placeholder="selected ? '' : 'SEARCH FOR A CITY HERE!'"
+    />
   </div>
 </template>
 <script>
@@ -17,17 +17,18 @@ export default {
   name: "LocationBar",
   data: function () {
     return {
-      selected: null,
+      selected: "",
       search: "",
     };
   },
   methods: {
     setCity() {
-      this.search = "";
       this.$emit("update", {
         city: this.selected.name,
         country: this.selected.country,
       });
+      this.search = "";
+      this.selected = "";
     },
   },
   computed: {
@@ -36,7 +37,7 @@ export default {
         .filter((city) =>
           city.name.toLowerCase().startsWith(this.search.toLowerCase())
         )
-        .slice(0, 10);
+        .slice(0, 20);
     },
   },
 };
