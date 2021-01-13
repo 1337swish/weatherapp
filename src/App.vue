@@ -13,6 +13,6 @@ body {
 }
 
 .text-responsive {
-  font-size: calc(25% + 1vw + 1vh) !important;
+  font-size: calc(20% + 1vw + 1vh) !important;
 }
 </style>

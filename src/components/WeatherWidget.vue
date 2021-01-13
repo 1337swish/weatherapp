@@ -1,180 +1,163 @@
 <template>
-  <div class="container-fluid">
+  <div id="widget">
     <!-- Day of the week -->
-    <div class="row text-center">
-      <div v-if="weatherNow || weatherForecast" class="col-12">
-        <p class="coloredText">{{ day }}</p>
-      </div>
+    <div
+      :style="{ left: page * 100 + 'vw' }"
+      id="dayText"
+      v-if="weatherNow || weatherForecast"
+    >
+      <p class="coloredText">{{ day }}</p>
     </div>
     <!-- Current weather part -->
-    <div>
+    <div v-if="weatherNow">
       <!-- Weather icon -->
-      <div v-if="weatherNow" class="row text-center">
-        <div class="col">
-          <img
-            :src="weatherIconURL(this.weatherNow.data[0].weather.code)"
-            class="img w-25"
-            alt="Responsive image"
-            id="img1"
-          />
-        </div>
-      </div>
+      <img
+        id="weatherIcon"
+        :src="weatherIconURL(this.weatherNow.data[0].weather.code)"
+        alt="Weather icon"
+      />
 
       <!-- Temperature outside -->
-      <div v-if="weatherNow" class="row text-center">
-        <div class="col">
-          <h1 v-if="temperatureScale == false" class="display-1 coloredText">
-            {{ weatherNow.data[0].temp }}&deg; C
-          </h1>
-          <h1 v-else class="display-1 coloredText">
-            {{ (weatherNow.data[0].temp * 1.8 + 32).toFixed(1) }}&deg; F
-          </h1>
-        </div>
+      <div id="tempText">
+        <h1 v-if="temperatureScale == false" class="display-1 coloredText">
+          {{ weatherNow.data[0].temp }}&deg; C
+        </h1>
+        <h1 v-else class="display-1 coloredText">
+          {{ (weatherNow.data[0].temp * 1.8 + 32).toFixed(1) }}&deg; F
+        </h1>
       </div>
 
       <!-- Other weather information -->
-      <div v-if="weatherNow" class="row text-center pt-3">
-        <div class="col-4">
-          <p class="text-responsive coloredText">
-            Clouds <br />
-            {{ weatherNow.data[0].clouds }} %
-          </p>
-        </div>
-        <div class="col-4">
-          <p class="text-responsive coloredText">
-            Wind <br />
-            {{ weatherNow.data[0].wind_spd.toFixed(1) }} m/s <br />
-            {{ weatherNow.data[0].wind_cdir }}
-          </p>
-        </div>
-        <div class="col-4">
-          <p
-            v-if="weatherNow.data[0].snow == '0'"
-            class="text-responsive coloredText"
-          >
-            Rain <br />
-            {{ weatherNow.data[0].precip.toFixed(1) }} mm/h
-          </p>
-          <p v-else class="text-responsive coloredText">
-            Snow <br />
-            {{ weatherNow.data[0].snow.toFixed(1) }} mm/h
-          </p>
-        </div>
+      <div id="cloudsText">
+        <p class="text-responsive text-center coloredText">
+          Clouds <br />
+          {{ weatherNow.data[0].clouds }} %
+        </p>
+      </div>
+      <div id="windText">
+        <p class="text-responsive text-center coloredText">
+          Wind <br />
+          {{ weatherNow.data[0].wind_spd.toFixed(1) }} m/s <br />
+          {{ weatherNow.data[0].wind_cdir }}
+        </p>
+      </div>
+      <div id="precipationText">
+        <p
+          v-if="weatherNow.data[0].snow == '0'"
+          class="text-responsive text-center coloredText"
+        >
+          Rain <br />
+          {{ weatherNow.data[0].precip.toFixed(1) }} mm/h
+        </p>
+        <p v-else class="text-responsive text-center coloredText">
+          Snow <br />
+          {{ weatherNow.data[0].snow.toFixed(1) }} mm/h
+        </p>
       </div>
 
       <!-- Sunrise/sunset -->
-      <div v-if="weatherNow" class="row text-center pt-4">
-        <div class="col-6">
-          <p class="text-responsive coloredText">
-            Sunrise <br />
-            {{ sunriseToday }}
-          </p>
-        </div>
-        <div class="col-6">
-          <p class="text-responsive coloredText">
-            Sunset <br />
-            {{ sunsetToday }}
-          </p>
-        </div>
-      </div>
+      <p id="sunriseText" class="text-responsive text-center coloredText">
+        Sunrise <br />
+        {{ sunriseToday }}
+      </p>
+      <p id="sunsetText" class="text-responsive text-center coloredText">
+        Sunset <br />
+        {{ sunsetToday }}
+      </p>
     </div>
 
     <!-- Forecast weather part -->
-    <div>
+    <div v-if="weatherForecast">
       <!-- Weather icon -->
-      <div v-if="weatherForecast" class="row text-center">
-        <div class="col">
-          <img
-            :src="weatherIconURL(this.weatherForecast.weather.code)"
-            class="img w-25"
-            alt="Responsive image"
-            id="img1"
-          />
-        </div>
-      </div>
+      <img
+        :style="{ left: page * 100 + 'vw' }"
+        id="weatherIcon2"
+        :src="weatherIconURL(this.weatherForecast.weather.code)"
+        alt="Weather icon"
+      />
 
       <!-- Temperature high and low -->
-      <div v-if="weatherForecast" class="row text-center">
-        <div class="col-6">
-          <p
-            v-if="temperatureScale == false"
-            class="text-responsive coloredText"
-          >
-            High <br />
-            {{ weatherForecast.max_temp }}&deg; C
-          </p>
-          <p v-else class="text-responsive coloredText">
-            High <br />
-            {{ (weatherForecast.max_temp * 1.8 + 32).toFixed(1) }}&deg; F
-          </p>
-        </div>
-        <div class="col-6">
-          <p
-            v-if="temperatureScale == false"
-            class="text-responsive coloredText"
-          >
-            Low <br />
-            {{ weatherForecast.min_temp }}&deg; C
-          </p>
-          <p v-else class="text-responsive coloredText">
-            Low <br />
-            {{ (weatherForecast.min_temp * 1.8 + 32).toFixed(1) }}&deg; F
-          </p>
-        </div>
+      <div :style="{ left: page * 100 + 'vw' }" id="maxtempText">
+        <p
+          v-if="temperatureScale == false"
+          class="text-responsive text-center coloredText"
+        >
+          High <br />
+          {{ weatherForecast.max_temp }}&deg; C
+        </p>
+        <p v-else class="text-responsive text-center coloredText">
+          High <br />
+          {{ (weatherForecast.max_temp * 1.8 + 32).toFixed(1) }}&deg; F
+        </p>
+      </div>
+      <div :style="{ left: page * 100 + 'vw' }" id="mintempText">
+        <p
+          v-if="temperatureScale == false"
+          class="text-responsive text-center coloredText"
+        >
+          Low <br />
+          {{ weatherForecast.min_temp }}&deg; C
+        </p>
+        <p v-else class="text-responsive text-center coloredText">
+          Low <br />
+          {{ (weatherForecast.min_temp * 1.8 + 32).toFixed(1) }}&deg; F
+        </p>
       </div>
 
       <!-- Probability of Precipitation & winds -->
-      <div v-if="weatherForecast" class="row text-center py-3">
-        <div class="col-6">
-          <p class="text-responsive coloredText">
-            Precipitation <br />
-            {{ weatherForecast.pop }}%
-          </p>
-        </div>
-        <div class="col-6">
-          <p class="text-responsive coloredText">
-            Cloud coverage <br />
-            {{ weatherForecast.clouds }}%
-          </p>
-        </div>
+      <div :style="{ left: page * 100 + 'vw' }" id="precipation2Text">
+        <p class="text-responsive text-center coloredText">
+          Precipitation <br />
+          {{ weatherForecast.pop }}%
+        </p>
       </div>
-      <div v-if="weatherForecast" class="row text-center">
-        <div v-if="weatherForecast.snow == '0'" class="col-6">
-          <p class="text-responsive coloredText">
+      <div :style="{ left: page * 100 + 'vw' }" id="clouds2Text">
+        <p class="text-responsive text-center coloredText">
+          Clouds <br />
+          {{ weatherForecast.clouds }}%
+        </p>
+      </div>
+      <div :style="{ left: page * 100 + 'vw' }" id="precipationAmountText">
+        <div v-if="weatherForecast.snow == '0'">
+          <p class="text-responsive text-center coloredText">
             Rain <br />
             {{ weatherForecast.precip.toFixed(1) }} mm
           </p>
         </div>
-        <div v-else class="col-6">
-          <p class="text-responsive coloredText">
+        <div v-else>
+          <p class="text-responsive text-center coloredText">
             Snow <br />
             {{ weatherForecast.snow.toFixed(1) }} mm
           </p>
         </div>
-        <div class="col-6">
-          <p class="text-responsive coloredText">
-            Winds <br />
-            {{ weatherForecast.wind_spd.toFixed(1) }} m/s
-            {{ weatherForecast.wind_cdir }}
-          </p>
-        </div>
       </div>
+      <p
+        :style="{ left: page * 100 + 'vw' }"
+        id="winds2Text"
+        class="text-responsive text-center coloredText"
+      >
+        Winds <br />
+        {{ weatherForecast.wind_spd.toFixed(1) }} m/s
+        {{ weatherForecast.wind_cdir }}
+      </p>
 
       <!-- Sunrise/sunset -->
-      <div v-if="weatherForecast" class="row text-center pt-4">
-        <div class="col-6 p-0">
-          <p class="text-responsive coloredText">
-            Sunrise <br />
-            {{ sunrise }}
-          </p>
-        </div>
-        <div class="col-6 p-0">
-          <p class="text-responsive coloredText">
-            Sunset <br />
-            {{ sunset }}
-          </p>
-        </div>
-      </div>
+      <p
+        :style="{ left: page * 100 + 'vw' }"
+        id="sunrise2Text"
+        class="text-responsive text-center coloredText"
+      >
+        Sunrise <br />
+        {{ sunrise }}
+      </p>
+      <p
+        :style="{ left: page * 100 + 'vw' }"
+        id="sunset2Text"
+        class="text-responsive text-center coloredText"
+      >
+        Sunset <br />
+        {{ sunset }}
+      </p>
     </div>
   </div>
 </template>
@@ -182,7 +165,7 @@
 <script>
 export default {
   name: "WeatherWidget",
-  props: ["weatherNow", "weatherForecast", "temperatureScale"],
+  props: ["weatherNow", "weatherForecast", "temperatureScale", "page"],
   data() {
     return {
       codesForThunder: [200, 201, 202, 230, 231, 232, 233],
@@ -198,6 +181,9 @@ export default {
     };
   },
   computed: {
+    width() {
+      return this.page;
+    },
     sunriseToday() {
       let sunriseHour = parseInt(
         this.weatherNow.data[0].sunrise.substring(0, 2)
@@ -266,3 +252,162 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#widget {
+  height: 75vh;
+  width: 100vh;
+}
+
+#dayText {
+  position: fixed;
+  top: 27vh;
+  margin-left: -50%;
+  transform: translate(-50%);
+}
+
+#tempText {
+  top: 32vh;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+#cloudsText {
+  top: 45vh;
+  position: fixed;
+  left: 25%;
+  transform: translate(-50%);
+}
+
+#windText {
+  top: 45vh;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+#precipationText {
+  top: 45vh;
+  position: fixed;
+  left: 75%;
+  transform: translate(-50%);
+}
+
+#sunriseText {
+  top: 60vh;
+  position: fixed;
+  left: 40%;
+  transform: translate(-50%);
+}
+
+#sunsetText {
+  top: 60vh;
+  position: fixed;
+  left: 60%;
+  transform: translate(-50%);
+}
+
+#mintempText {
+  position: fixed;
+  top: 32vh;
+  margin-left: -65%;
+  transform: translate(-50%);
+  width: 20vw;
+}
+
+#maxtempText {
+  position: fixed;
+  top: 32vh;
+  margin-left: -35%;
+  transform: translate(-50%);
+  width: 20vw;
+}
+
+#precipation2Text {
+  position: fixed;
+  top: 42vh;
+  margin-left: -65%;
+  transform: translate(-50%);
+  width: 20vw;
+}
+
+#clouds2Text {
+  position: fixed;
+  top: 42vh;
+  margin-left: -35%;
+  transform: translate(-50%);
+  width: 20vw;
+}
+
+#precipationAmountText {
+  position: fixed;
+  top: 52vh;
+  margin-left: -65%;
+  transform: translate(-50%);
+  width: 20vw;
+}
+
+#winds2Text {
+  position: fixed;
+  top: 52vh;
+  margin-left: -35%;
+  transform: translate(-50%);
+  width: 20vw;
+}
+
+#sunrise2Text {
+  position: fixed;
+  top: 62vh;
+  margin-left: -65%;
+  transform: translate(-50%);
+  width: 20vw;
+}
+
+#sunset2Text {
+  position: fixed;
+  top: 62vh;
+  margin-left: -35%;
+  transform: translate(-50%);
+  width: 20vw;
+}
+
+#weatherIcon {
+  position: fixed;
+  top: 10vh;
+  left: 80vw;
+  transform: translate(-50%);
+  z-index: -99;
+  width: 30vh;
+  height: 30vh;
+}
+
+#weatherIcon2 {
+  position: fixed;
+  margin-left: -30vw;
+  top: 10vh;
+  z-index: -99;
+  width: 30vh;
+  height: 30vh;
+}
+
+@media screen and (min-width: 993px) {
+  #cloudsText {
+    left: 35%;
+  }
+
+  #windText {
+    left: 50%;
+  }
+
+  #precipationText {
+    left: 65%;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  #weatherIcon2 {
+    margin-left: -40vw;
+  }
+}
+</style>
