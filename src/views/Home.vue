@@ -1,120 +1,130 @@
 <template>
-  <div v-if="loaded" class="home">
-    <!-- Location search bar & find location button -->
-    <div id="locationBar">
-      <div class="text-center">
-        <button class="btn" @click="findUserLocation" id="locationButton">
-          FIND YOUR LOCATION
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-geo-alt"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"
-            />
-            <path
-              d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
-            />
-          </svg>
-        </button>
+  <div>
+    <loading
+      id="loadingOverlay"
+      :active.sync="isLoading"
+      color="#ff6f00"
+      background-color="#000000"
+      :opacity="0.75"
+    ></loading>
+    <div v-if="loaded">
+      <!-- Location search bar & find location button -->
+      <div id="locationBar">
+        <div class="text-center">
+          <button class="btn" @click="findUserLocation" id="locationButton">
+            FIND YOUR LOCATION
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-geo-alt"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"
+              />
+              <path
+                d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"
+              />
+            </svg>
+          </button>
+        </div>
+        <LocationBar
+          id="locationSearch"
+          class="locationbar"
+          @update="fetchWeather"
+        />
       </div>
-      <LocationBar
-        id="locationSearch"
-        class="locationbar"
-        @update="fetchWeather"
-      />
-    </div>
 
-    <!-- Name of city -->
-    <h1 id="cityText" class="display-3 coloredText">
-      {{ weatherNow.data[0].city_name }}
-    </h1>
+      <!-- Name of city -->
+      <h1 id="cityText" class="display-3 text-center coloredText">
+        {{ weatherNow.data[0].city_name }}
+      </h1>
 
-    <!-- Name of country -->
-    <div id="countryText">
-      <div class="col">
-        <h5 class="coloredText">
+      <!-- Name of country -->
+      <div id="countryText">
+        <h5 class="coloredText text-center">
           {{ country }}
         </h5>
       </div>
-    </div>
 
-    <!-- Carousel -->
-    <div id="carousel">
-      <carousel
-        :perPage="1"
-        paginationActiveColor="#ff6f00"
-        paginationColor="#ffffff"
-      >
+      <!-- Carousel -->
+      <div id="carousel">
+        <carousel
+          :perPage="1"
+          paginationActiveColor="#ff6f00"
+          paginationColor="#ffffff"
         >
-        <slide id="VueCarousel-slide-0"
-          ><WeatherWidget
-            :weatherNow="weatherNow"
-            :temperatureScale="temperatureScale"
-            :page="1"
-        /></slide>
-        <slide
-          ><WeatherWidget
-            :weatherForecast="weatherForecast.data[1]"
-            :temperatureScale="temperatureScale"
-            :page="2"
-        /></slide>
-        <slide
-          ><WeatherWidget
-            :weatherForecast="weatherForecast.data[2]"
-            :temperatureScale="temperatureScale"
-            :page="3"
-        /></slide>
-        <slide
-          ><WeatherWidget
-            :weatherForecast="weatherForecast.data[3]"
-            :temperatureScale="temperatureScale"
-            :page="4"
-        /></slide>
-        <slide
-          ><WeatherWidget
-            :weatherForecast="weatherForecast.data[4]"
-            :temperatureScale="temperatureScale"
-            :page="5"
-        /></slide>
-        <slide
-          ><WeatherWidget
-            :weatherForecast="weatherForecast.data[5]"
-            :temperatureScale="temperatureScale"
-            :page="6"
-        /></slide>
-        <slide
-          ><WeatherWidget
-            :weatherForecast="weatherForecast.data[6]"
-            :temperatureScale="temperatureScale"
-            :page="7"
-        /></slide>
-      </carousel>
+          >
+          <slide id="VueCarousel-slide-0"
+            ><WeatherWidget
+              :weatherNow="weatherNow"
+              :temperatureScale="temperatureScale"
+              :page="1"
+          /></slide>
+          <slide
+            ><WeatherWidget
+              :weatherForecast="weatherForecast.data[1]"
+              :temperatureScale="temperatureScale"
+              :page="2"
+          /></slide>
+          <slide
+            ><WeatherWidget
+              :weatherForecast="weatherForecast.data[2]"
+              :temperatureScale="temperatureScale"
+              :page="3"
+          /></slide>
+          <slide
+            ><WeatherWidget
+              :weatherForecast="weatherForecast.data[3]"
+              :temperatureScale="temperatureScale"
+              :page="4"
+          /></slide>
+          <slide
+            ><WeatherWidget
+              :weatherForecast="weatherForecast.data[4]"
+              :temperatureScale="temperatureScale"
+              :page="5"
+          /></slide>
+          <slide
+            ><WeatherWidget
+              :weatherForecast="weatherForecast.data[5]"
+              :temperatureScale="temperatureScale"
+              :page="6"
+          /></slide>
+          <slide
+            ><WeatherWidget
+              :weatherForecast="weatherForecast.data[6]"
+              :temperatureScale="temperatureScale"
+              :page="7"
+          /></slide>
+        </carousel>
+      </div>
+      <!-- Temperature scale switch -->
+      <v-switch
+        id="tempSwitch"
+        v-model="temperatureScale"
+        text-enabled="Fahrenheit"
+        text-disabled="Celsius"
+        theme="bootstrap"
+        color="warning"
+      ></v-switch>
     </div>
-    <!-- Temperature scale switch -->
-    <v-switch
-      id="tempSwitch"
-      v-model="temperatureScale"
-      text-enabled="Fahrenheit"
-      text-disabled="Celsius"
-      theme="bootstrap"
-      color="warning"
-    ></v-switch>
   </div>
 </template>
 <script>
 import LocationBar from "@/components/LocationBar.vue";
 import WeatherWidget from "@/components/WeatherWidget.vue";
 import axios from "axios";
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 export default {
   name: "Home",
   components: {
     LocationBar,
     WeatherWidget,
+    Loading,
   },
   data: function () {
     return {
@@ -123,6 +133,8 @@ export default {
       temperatureScale: false,
       country: null,
       loaded: false,
+      isLoading: false,
+      firstLoad: true,
     };
   },
   methods: {
@@ -140,6 +152,11 @@ export default {
       );
     },
     fetchWeather: async function (args) {
+      if (this.firstLoad) {
+        this.firstLoad = false;
+      } else {
+        this.isLoading = true;
+      }
       let URL = "https://api.weatherbit.io/v2.0/current?";
       let URL2 = "https://api.weatherbit.io/v2.0/forecast/daily?";
       // eslint-disable-next-line no-prototype-builtins
@@ -160,13 +177,12 @@ export default {
       this.country = args.country;
       URL = URL + "&key=f35e9420a2f441d0ad9dbf081cc1bd11";
       URL2 = URL2 + "&key=f35e9420a2f441d0ad9dbf081cc1bd11";
-      await axios
-        .get(URL)
-        .then((response) => (this.weatherNow = response.data));
+      axios.get(URL).then((response) => (this.weatherNow = response.data));
       await axios
         .get(URL2)
         .then((response) => (this.weatherForecast = response.data));
       this.loaded = true;
+      this.isLoading = false;
     },
     background: function () {
       if (this.weatherNow) {
@@ -231,7 +247,7 @@ export default {
   },
   created() {
     this.fetchWeather({
-      city: "London",
+      city: "Stockholm",
     });
   },
   updated() {
@@ -250,7 +266,7 @@ export default {
   left: 50%;
   transform: translate(-50%);
   width: 100%;
-  z-index: 999;
+  z-index: 99;
 }
 
 #locationButton {
@@ -268,6 +284,7 @@ export default {
 
 #cityText {
   position: fixed;
+  width: 100%;
   left: 50%;
   transform: translate(-50%);
   top: 15%;
@@ -276,6 +293,7 @@ export default {
 #countryText {
   position: fixed;
   left: 50%;
+  width: 100%;
   transform: translate(-50%);
   top: 23%;
 }
@@ -314,5 +332,9 @@ export default {
   #locationBar {
     width: 500px;
   }
+}
+
+#loadingOverlay {
+  z-index: 999;
 }
 </style>
