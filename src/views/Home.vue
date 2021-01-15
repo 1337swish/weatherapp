@@ -135,6 +135,8 @@ export default {
       loaded: false,
       isLoading: false,
       firstLoad: true,
+      textElements: [],
+      tempText: [],
     };
   },
   methods: {
@@ -161,16 +163,11 @@ export default {
       let URL2 = "https://api.weatherbit.io/v2.0/forecast/daily?";
       // eslint-disable-next-line no-prototype-builtins
       if (args.hasOwnProperty("latitude")) {
-        URL = URL + "&lat=" + args.latitude;
-        URL2 = URL2 + "&lat=" + args.latitude;
+        URL = URL + "&lat=" + args.latitude + "&lon=" + args.longitude;
+        URL2 = URL2 + "&lat=" + args.latitude + "&lon=" + args.longitude;
       }
       // eslint-disable-next-line no-prototype-builtins
-      if (args.hasOwnProperty("longitude")) {
-        URL = URL + "&lon=" + args.longitude;
-        URL2 = URL2 + "&lon=" + args.longitude;
-      }
-      // eslint-disable-next-line no-prototype-builtins
-      if (args.hasOwnProperty("city")) {
+      else if (args.hasOwnProperty("city")) {
         URL = URL + "&city=" + args.city;
         URL2 = URL2 + "&city=" + args.city;
       }
@@ -204,13 +201,11 @@ export default {
           parseInt(time.getUTCHours()) * 60 + parseInt(time.getUTCMinutes());
         let minutesAfterSunrise = minutesNow - sunriseMins;
 
-        let elements = document.getElementsByClassName("coloredText");
-        let tempText = document.getElementsByClassName("vue-switcher__label");
         // Set background and text color depending on time
         if (minutesAfterSunrise > 0 && minutesAfterSunrise < 60) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
-          tempText[0].style.color = "white";
-          elements.forEach((e) => {
+          this.tempText[0].style.color = "white";
+          this.textElements.forEach((e) => {
             e.style.textShadow = "black 1px 1px 4px";
             e.style.color = "white";
           });
@@ -219,8 +214,8 @@ export default {
           minutesAfterSunrise < minutesDiff
         ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/day.jpg")})`;
-          tempText[0].style.color = "black";
-          elements.forEach((e) => {
+          this.tempText[0].style.color = "black";
+          this.textElements.forEach((e) => {
             e.style.textShadow = "none";
             e.style.color = "black";
           });
@@ -229,15 +224,15 @@ export default {
           minutesAfterSunrise < minutesDiff + 45
         ) {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/dawn.jpg")})`;
-          tempText[0].style.color = "white";
-          elements.forEach((e) => {
+          this.tempText[0].style.color = "white";
+          this.textElements.forEach((e) => {
             e.style.textShadow = "black 1px 1px 4px";
             e.style.color = "white";
           });
         } else {
           document.body.style.backgroundImage = `url(${require("@/assets/backgrounds/night.png")})`;
-          tempText[0].style.color = "white";
-          elements.forEach((e) => {
+          this.tempText[0].style.color = "white";
+          this.textElements.forEach((e) => {
             e.style.textShadow = "black 1px 1px 4px";
             e.style.color = "white";
           });
@@ -249,6 +244,10 @@ export default {
     this.fetchWeather({
       city: "Stockholm",
     });
+  },
+  mounted() {
+    this.textElements = document.getElementsByClassName("coloredText");
+    this.tempText = document.getElementsByClassName("vue-switcher__label");
   },
   updated() {
     this.background();

@@ -26,10 +26,10 @@ body {
   position: fixed;
   width: 50%;
   height: 100%;
-  animation: slideLeft 0.6s ease-in 2.5s forwards;
-  -moz-animation: slideLeft 0.6s ease-in 2.5s forwards;
-  -webkit-animation: slideLeft 0.6s ease-in 2.5s forwards;
-  -o-animation: slideLeft 0.6s ease-in 2.5s forwards;
+  animation: slideLeft 0.6s ease-in 4s forwards;
+  -moz-animation: slideLeft 0.6s ease-in 4s forwards;
+  -webkit-animation: slideLeft 0.6s ease-in 4s forwards;
+  -o-animation: slideLeft 0.6s ease-in 4s forwards;
 }
 
 #leftLine {
@@ -40,14 +40,14 @@ body {
   left: calc(50% - 2px);
   height: 100%;
   width: 4px;
-  -webkit-animation: increaseLeftLine 2.5s forwards,
-    slideLeftLine 0.6s ease-in 2.5s forwards;
-  -moz-animation: increaseLeftLine 2.5s forwards,
-    slideLeftLine 0.6s ease-in 2.5s forwards;
-  -o-animation: increaseLeftLine 2.5s forwards,
-    slideLeftLine 0.6s ease-in 2.5s forwards;
-  animation: increaseLeftLine 2.5s forwards,
-    slideLeftLine 0.6s ease-in 2.5s forwards;
+  -webkit-animation: increaseLeftLine 4s forwards,
+    slideLeftLine 0.6s ease-in 4s forwards;
+  -moz-animation: increaseLeftLine 4s forwards,
+    slideLeftLine 0.6s ease-in 4s forwards;
+  -o-animation: increaseLeftLine 4s forwards,
+    slideLeftLine 0.6s ease-in 4s forwards;
+  animation: increaseLeftLine 4s forwards,
+    slideLeftLine 0.6s ease-in 4s forwards;
 }
 
 #rightCover {
@@ -57,10 +57,10 @@ body {
   left: 50%;
   width: 50%;
   height: 100%;
-  animation: slideRight 0.6s ease-in 2.5s forwards;
-  -moz-animation: slideRight 0.6s ease-in 2.5s forwards;
-  -webkit-animation: slideRight 0.6s ease-in 2.5s forwards;
-  -o-animation: slideRight 0.6s ease-in 2.5s forwards;
+  animation: slideRight 0.6s ease-in 4s forwards;
+  -moz-animation: slideRight 0.6s ease-in 4s forwards;
+  -webkit-animation: slideRight 0.6s ease-in 4s forwards;
+  -o-animation: slideRight 0.6s ease-in 4s forwards;
 }
 
 #rightLine {
@@ -71,14 +71,13 @@ body {
   left: calc(50% + 2px);
   height: 100%;
   width: 4px;
-  -webkit-animation: increaseRightLine 2.5s forwards,
-    slideRight 0.6s ease-in 2.5s forwards;
-  -moz-animation: increaseRightLine 2.5s forwards,
-    slideRight 0.6s ease-in 2.5s forwards;
-  -o-animation: increaseRightLine 2.5s forwards,
-    slideRight 0.6s ease-in 2.5s forwards;
-  animation: increaseRightLine 2.5s forwards,
-    slideRight 0.6s ease-in 2.5s forwards;
+  -webkit-animation: increaseRightLine 4ss forwards,
+    slideRight 0.6s ease-in 4s forwards;
+  -moz-animation: increaseRightLine 4s forwards,
+    slideRight 0.6s ease-in 4s forwards;
+  -o-animation: increaseRightLine 4s forwards,
+    slideRight 0.6s ease-in 4s forwards;
+  animation: increaseRightLine 4s forwards, slideRight 0.6s ease-in 4s forwards;
 }
 
 @keyframes slideLeft {
