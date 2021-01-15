@@ -30,13 +30,19 @@
       <!-- Other weather information -->
       <div id="cloudsText">
         <p class="text-responsive text-center coloredText">
-          Clouds <br />
+          <img
+            id="cloudIcon"
+            :src="weatherIconURL('cloudIcon')"
+            alt="Cloud icon"
+          />
+          <br />
           {{ weatherNow.data[0].clouds }} %
         </p>
       </div>
       <div id="windText">
         <p class="text-responsive text-center coloredText">
-          Wind <br />
+          Winds
+          <br />
           {{ weatherNow.data[0].wind_spd.toFixed(1) }} m/s <br />
           {{ weatherNow.data[0].wind_cdir }}
         </p>
@@ -46,22 +52,42 @@
           v-if="weatherNow.data[0].snow == '0'"
           class="text-responsive text-center coloredText"
         >
-          Rain <br />
+          <img
+            id="rainIcon"
+            :src="weatherIconURL('rainIcon')"
+            alt="Rain icon"
+          />
+          <br />
           {{ weatherNow.data[0].precip.toFixed(1) }} mm/h
         </p>
         <p v-else class="text-responsive text-center coloredText">
-          Snow <br />
+          <img
+            id="snowIcon"
+            :src="weatherIconURL('snowIcon')"
+            alt="Snow icon"
+          />
+          <br />
           {{ weatherNow.data[0].snow.toFixed(1) }} mm/h
         </p>
       </div>
 
       <!-- Sunrise/sunset -->
       <p id="sunriseText" class="text-responsive text-center coloredText">
-        Sunrise <br />
+        <img
+          id="sunriseIcon"
+          :src="weatherIconURL('sunriseIcon')"
+          alt="Sunrise icon"
+        />
+        <br />
         {{ sunriseToday }}
       </p>
       <p id="sunsetText" class="text-responsive text-center coloredText">
-        Sunset <br />
+        <img
+          id="sunsetIcon"
+          :src="weatherIconURL('sunsetIcon')"
+          alt="Sunset icon"
+        />
+        <br />
         {{ sunsetToday }}
       </p>
     </div>
@@ -245,8 +271,18 @@ export default {
         return require("../assets/weather_icons/rainy-heavy.svg");
       } else if (this.codesForCloudy.includes(code)) {
         return require("../assets/weather_icons/cloudy.svg");
-      } else {
+      } else if (this.codesForCloudySunny.includes(code)) {
         return require("../assets/weather_icons/cloudy-sunny.svg");
+      } else if (code == "cloudIcon") {
+        return require("../assets/weather_icons/cloudy.svg");
+      } else if (code == "snowIcon") {
+        return require("../assets/weather_icons/snowy-heavy.svg");
+      } else if (code == "rainIcon") {
+        return require("../assets/weather_icons/rainy-heavy.svg");
+      } else if (code == "sunriseIcon") {
+        return require("../assets/weather_icons/sunrise.png");
+      } else if (code == "sunsetIcon") {
+        return require("../assets/weather_icons/sunset.png");
       }
     },
   },
