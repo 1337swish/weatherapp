@@ -1,7 +1,24 @@
-# weatherapp
-Version 1.0  
-Live demo can be found here: https://suspicious-minsky-8cb0c5.netlify.app/
-## Project setup
+# About
+A weatherapp I've developed in my spare time for viewing current weather and weather forecasts  
+Live demo: https://suspicious-minsky-8cb0c5.netlify.app/  
+
+# Technologies used
+* HTML
+* CSS
+* Javascript
+* Vue.js
+* Axios
+
+# What I've learned
+* Asynchronous programming in Javascript
+* Design and animations using css
+* Using plugins in Vue.js
+* Axois to fetch data
+
+## Local installation
+```
+git clone https://github.com/98claes98/weatherapp.git
+```
 ```
 npm install
 ```
@@ -15,11 +32,3 @@ npm run serve
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
