@@ -1,6 +1,6 @@
 # About
 A weatherapp I've developed in my spare time for viewing current weather and weather forecasts  
-Live demo: https://suspicious-minsky-8cb0c5.netlify.app/  
+Live demo: https://weatherapp.claesandersson.se/  
 
 # Technologies used
 * HTML
